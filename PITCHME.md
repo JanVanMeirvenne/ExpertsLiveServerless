@@ -7,9 +7,11 @@ The next-generation of application development
 ### Evolution of application development
 
 - Physical Hardware: oldskool
-- VM-Based: abstraction of hardware layer
-- Container Based: abstraction of the OS layer
+- Virtual Machine: abstraction of hardware layer
+- Container: abstraction of the OS layer
 - Serverless: abstraction of the middleware stack
+
+Every evolution adds increased flexibility, scalability & ease-of-use!
 
 ---
 
@@ -42,6 +44,7 @@ No, but the main concept is that you only need to worry about your code, and don
 
 - Existing apps need to be refactored to work as a micro-service
 - Middle ground = using containers as intermediate solution
+- Greenfield? Go for it!
 
 ---
 
