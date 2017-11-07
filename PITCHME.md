@@ -35,8 +35,7 @@ No, but the main concept is that you only need to worry about your code, and don
 - LogicApps: Visual Business Flow Modelling (think System Center Orchestrator meets 2017)
 - EventGrid: cloud-based event platform based on publisher/listener mechanism
 - CosmosDB/Azure Storage: store records and/or state that is used by your code
-
-- Various tools can be glued together by using input & output bindings
+- And more...
 
 ---
 
@@ -57,6 +56,12 @@ No, but the main concept is that you only need to worry about your code, and don
 ---
 
 ### DEMO TIME
+
+---
+
+### Interesing links
+
+- [Azure Serverless Platform](https://azure.microsoft.com/en-us/overview/serverless-computing/)
 
 ---
 
