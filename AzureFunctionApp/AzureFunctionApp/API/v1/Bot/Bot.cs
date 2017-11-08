@@ -49,7 +49,7 @@ namespace AzureFunctionApp.API.v1.Bot
                 if (msg.Text.ToLower().Contains("introduce"))
                 {
 
-                    text = "I am an Azure Function created as a demo for this Experts Live event. Please to meet you all! What trick do you want me to perform first?";
+                    text = "I am an Azure Function created as a demo for this Experts Live event. Pleased to meet you all! What trick do you want me to perform first?";
                     reply = msg.CreateReply(text);
                     reply.Speak = text;
                 }
