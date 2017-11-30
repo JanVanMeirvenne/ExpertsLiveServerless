@@ -20,8 +20,9 @@ No, but the main concept is that you only need to worry about your code, and don
 
 ### Why go serverless?
 
-<img src="https://github.com/JanVanMeirvenne/ExpertsLiveServerless/raw/master/images/benefits.png" height=200px)
-<img src="https://github.com/JanVanMeirvenne/ExpertsLiveServerless/raw/master/images/why.png" height=200px)
+<img src="https://github.com/JanVanMeirvenne/ExpertsLiveServerless/raw/master/images/benefits.png" height=200px />
+<br />
+<img src="https://github.com/JanVanMeirvenne/ExpertsLiveServerless/raw/master/images/why.png" height=200px) />
 
 ---
 
