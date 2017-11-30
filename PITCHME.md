@@ -13,6 +13,8 @@ The next-generation of application development
 
 Every evolution adds increased flexibility, scalability & ease-of-use!
 
+![history](https://github.com/JanVanMeirvenne/ExpertsLiveServerless/raw/master/images/history.png)
+
 ---
 
 ### Is it realy serverless?
@@ -22,6 +24,9 @@ No, but the main concept is that you only need to worry about your code, and don
 ---
 
 ### Why go serverless?
+
+![why1](https://github.com/JanVanMeirvenne/ExpertsLiveServerless/raw/master/images/benefits.png)
+![why2](https://github.com/JanVanMeirvenne/ExpertsLiveServerless/raw/master/images/why.png)
 
 - Focus on business code = faster delivery of fixes and features
 - Micro-billing: only pay when your app is being consumed
@@ -35,6 +40,14 @@ No, but the main concept is that you only need to worry about your code, and don
 
 ---
 
+### Common Use Cases
+
+- Event-Driven Automation
+- Integration between systems
+- Provide common backend for multiple frontend (WebApp, PowerShell, Bot,....)
+
+---
+
 ### I want serverless! How do I get it implemented for my apps?
 
 - Existing apps need to be refactored to work as a micro-service
@@ -43,13 +56,6 @@ No, but the main concept is that you only need to worry about your code, and don
 
 ---
 
-### The new application delivery scenario
-
-- Expose HTTP endpoints with Azure Functions
-- Use multiple clients (Bot, WebSite, PowerShell module, Mobile) to access the endpoints
-- One backend, multiple frontends = optimal flexibility!
-
----
 
 ### DEMO TIME
 
