@@ -6,11 +6,6 @@ The next-generation of application development
 
 ### Evolution of application development
 
-- Physical Hardware: oldskool
-- Virtual Machine: abstraction of hardware layer
-- Container: abstraction of the OS layer
-- Serverless: abstraction of the middleware stack
-
 Every evolution adds increased flexibility, scalability & ease-of-use!
 
 ![history](https://github.com/JanVanMeirvenne/ExpertsLiveServerless/raw/master/images/history.png)
@@ -27,10 +22,6 @@ No, but the main concept is that you only need to worry about your code, and don
 
 ![why1](https://github.com/JanVanMeirvenne/ExpertsLiveServerless/raw/master/images/benefits.png)
 ![why2](https://github.com/JanVanMeirvenne/ExpertsLiveServerless/raw/master/images/why.png)
-
-- Focus on business code = faster delivery of fixes and features
-- Micro-billing: only pay when your app is being consumed
-- Auto-scaling: your code is scaled automatically depending on demand
 
 ---
 
