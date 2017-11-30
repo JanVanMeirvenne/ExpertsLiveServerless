@@ -1,0 +1,19 @@
+{
+  "bindings": [
+    {
+      "name": "inBlob",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "mailtemplates/{name}.html",
+      "connection": "staexpertslivecafe_STORAGE"
+    },
+    {
+      "type": "table",
+      "name": "$return",
+      "tableName": "mailTemplates",
+      "connection": "staexpertslivecafe_STORAGE",
+      "direction": "out"
+    }
+  ],
+  "disabled": false
+}

@@ -1,0 +1,308 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "azuretables_1_Connection_Name": {
+      "type": "string",
+      "defaultValue": "azuretables"
+    },
+    "azuretables_1_Connection_DisplayName": {
+      "type": "string",
+      "defaultValue": "TableStorage"
+    },
+    "azuretables_1_storageaccount": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of your storage account"
+      },
+      "defaultValue": "staexpertslivecafe"
+    },
+    "azuretables_1_sharedkey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The shared storage key of your storage account"
+      }
+    },
+    "azureeventgrid_1_Connection_Name": {
+      "type": "string",
+      "defaultValue": "azureeventgrid"
+    },
+    "azureeventgrid_1_Connection_DisplayName": {
+      "type": "string",
+      "defaultValue": "jan.vanmeirvenne@itnetx.be"
+    },
+    "office365_1_Connection_Name": {
+      "type": "string",
+      "defaultValue": "office365"
+    },
+    "office365_1_Connection_DisplayName": {
+      "type": "string",
+      "defaultValue": "jan.vanmeirvenne@itnetx.be"
+    },
+    "LogicAppLocation": {
+      "type": "string",
+      "minLength": 1,
+      "allowedValues": [
+        "[resourceGroup().location]",
+        "eastasia",
+        "southeastasia",
+        "centralus",
+        "eastus",
+        "eastus2",
+        "westus",
+        "northcentralus",
+        "southcentralus",
+        "northeurope",
+        "westeurope",
+        "japanwest",
+        "japaneast",
+        "brazilsouth",
+        "australiaeast",
+        "australiasoutheast",
+        "southindia",
+        "centralindia",
+        "westindia",
+        "canadacentral",
+        "canadaeast",
+        "uksouth",
+        "ukwest",
+        "westcentralus",
+        "westus2"
+      ],
+      "defaultValue": "westeurope"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "properties": {
+        "state": "Enabled",
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {
+            "$connections": {
+              "defaultValue": {},
+              "type": "Object"
+            }
+          },
+          "triggers": {
+            "AzureFunction_Sends_MailEvent": {
+              "splitOn": "@triggerBody()",
+              "type": "ApiConnectionWebhook",
+              "inputs": {
+                "body": {
+                  "properties": {
+                    "destination": {
+                      "endpointType": "webhook",
+                      "properties": {
+                        "endpointUrl": "@{listCallbackUrl()}"
+                      }
+                    },
+                    "topic": "/subscriptions/9f2444e9-ca8b-4ddd-8ed9-53c3d45dc5bd/resourceGroups/rg-expertslivecafeserverless/providers/Microsoft.EventGrid/topics/sendmaileventgrid"
+                  }
+                },
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['azureeventgrid']['connectionId']"
+                  }
+                },
+                "path": "/subscriptions/@{encodeURIComponent('9f2444e9-ca8b-4ddd-8ed9-53c3d45dc5bd')}/providers/@{encodeURIComponent('Microsoft.EventGrid.topics')}/resource/eventSubscriptions",
+                "queries": {
+                  "x-ms-api-version": "2017-06-15-preview"
+                }
+              }
+            }
+          },
+          "actions": {
+            "Convert_EventGridData_To_Properties": {
+              "runAfter": {},
+              "type": "ParseJson",
+              "inputs": {
+                "content": "@triggerBody()",
+                "schema": {
+                  "properties": {
+                    "Data": {
+                      "properties": {
+                        "Body": {
+                          "type": "string"
+                        },
+                        "Subject": {
+                          "type": "string"
+                        },
+                        "To": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "EventTime": {
+                      "type": "string"
+                    },
+                    "EventType": {
+                      "type": "string"
+                    },
+                    "Id": {
+                      "type": "string"
+                    },
+                    "Subject": {
+                      "type": "string"
+                    },
+                    "topic": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            },
+            "Get_entity": {
+              "runAfter": {
+                "Convert_EventGridData_To_Properties": [
+                  "Succeeded"
+                ]
+              },
+              "type": "ApiConnection",
+              "inputs": {
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['azuretables']['connectionId']"
+                  }
+                },
+                "method": "get",
+                "path": "/Tables/@{encodeURIComponent('mailTemplates')}/entities(PartitionKey='@{encodeURIComponent(body('Convert_EventGridData_To_Properties')?['Data']?['Body'])}',RowKey='@{encodeURIComponent(body('Convert_EventGridData_To_Properties')?['Data']?['Body'])}')"
+              }
+            },
+            "Send_an_email": {
+              "runAfter": {
+                "Template_Row_To_Properties": [
+                  "Succeeded"
+                ]
+              },
+              "type": "ApiConnection",
+              "inputs": {
+                "body": {
+                  "Body": "@body('Template_Row_To_Properties')?['Content']",
+                  "IsHtml": true,
+                  "Subject": "@body('Convert_EventGridData_To_Properties')?['Data']?['Subject']",
+                  "To": "@body('Convert_EventGridData_To_Properties')?['Data']?['To']"
+                },
+                "host": {
+                  "connection": {
+                    "name": "@parameters('$connections')['office365']['connectionId']"
+                  }
+                },
+                "method": "post",
+                "path": "/Mail"
+              }
+            },
+            "Template_Row_To_Properties": {
+              "runAfter": {
+                "Get_entity": [
+                  "Succeeded"
+                ]
+              },
+              "type": "ParseJson",
+              "inputs": {
+                "content": "@body('Get_entity')",
+                "schema": {
+                  "properties": {
+                    "Content": {
+                      "type": "string"
+                    },
+                    "Name": {
+                      "type": "string"
+                    },
+                    "PartitionKey": {
+                      "type": "string"
+                    },
+                    "RowKey": {
+                      "type": "string"
+                    },
+                    "TimeStamp": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "outputs": {}
+        },
+        "parameters": {
+          "$connections": {
+            "value": {
+              "azureeventgrid": {
+                "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', 'westeurope', '/managedApis/', 'azureeventgrid')]",
+                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('azureeventgrid_1_Connection_Name'))]",
+                "connectionName": "[parameters('azureeventgrid_1_Connection_Name')]"
+              },
+              "azuretables": {
+                "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', 'westeurope', '/managedApis/', 'azuretables')]",
+                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('azuretables_1_Connection_Name'))]",
+                "connectionName": "[parameters('azuretables_1_Connection_Name')]"
+              },
+              "office365": {
+                "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', 'westeurope', '/managedApis/', 'office365')]",
+                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('office365_1_Connection_Name'))]",
+                "connectionName": "[parameters('office365_1_Connection_Name')]"
+              }
+            }
+          }
+        }
+      },
+      "name": "SendMail",
+      "type": "Microsoft.Logic/workflows",
+      "location": "[parameters('LogicAppLocation')]",
+      "tags": {},
+      "apiVersion": "2016-06-01",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/connections', parameters('azureeventgrid_1_Connection_Name'))]",
+        "[resourceId('Microsoft.Web/connections', parameters('azuretables_1_Connection_Name'))]",
+        "[resourceId('Microsoft.Web/connections', parameters('office365_1_Connection_Name'))]"
+      ]
+    },
+    {
+      "type": "MICROSOFT.WEB/CONNECTIONS",
+      "apiVersion": "2016-06-01",
+      "name": "[parameters('azuretables_1_Connection_Name')]",
+      "location": "westeurope",
+      "properties": {
+        "api": {
+          "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', 'westeurope', '/managedApis/', 'azuretables')]"
+        },
+        "displayName": "[parameters('azuretables_1_Connection_DisplayName')]",
+        "parameterValues": {
+          "storageaccount": "[parameters('azuretables_1_storageaccount')]",
+          "sharedkey": "[parameters('azuretables_1_sharedkey')]"
+        }
+      }
+    },
+    {
+      "type": "MICROSOFT.WEB/CONNECTIONS",
+      "apiVersion": "2016-06-01",
+      "name": "[parameters('azureeventgrid_1_Connection_Name')]",
+      "location": "westeurope",
+      "properties": {
+        "api": {
+          "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', 'westeurope', '/managedApis/', 'azureeventgrid')]"
+        },
+        "displayName": "[parameters('azureeventgrid_1_Connection_DisplayName')]"
+      }
+    },
+    {
+      "type": "MICROSOFT.WEB/CONNECTIONS",
+      "apiVersion": "2016-06-01",
+      "name": "[parameters('office365_1_Connection_Name')]",
+      "location": "westeurope",
+      "properties": {
+        "api": {
+          "id": "[concat(subscription().id, '/providers/Microsoft.Web/locations/', 'westeurope', '/managedApis/', 'office365')]"
+        },
+        "displayName": "[parameters('office365_1_Connection_DisplayName')]"
+      }
+    }
+  ],
+  "outputs": {}
+}

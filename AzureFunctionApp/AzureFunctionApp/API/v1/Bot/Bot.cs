@@ -114,7 +114,7 @@ namespace AzureFunctionApp.API.v1.Bot
                                 Data = new SendMail()
                                 {
                                     Body = "serverless",
-                                    Subject = "Experts Live Cafe: Serverless Presentation",
+                                    Subject = $"Experts Live Cafe: Serverless Presentation ({attendee.EMail})",
                                     To = "jan.vanmeirvenne@itnetx.be"
                                 }
                             });
