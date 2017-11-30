@@ -31,11 +31,7 @@ No, but the main concept is that you only need to worry about your code, and don
 
 ### What is the serverless offering in Azure?
 
-- Azure Functions: write custom code in multiple languages (C#, Powershell, PHP, Node.JS,...)
-- LogicApps: Visual Business Flow Modelling (think System Center Orchestrator meets 2017)
-- EventGrid: cloud-based event platform based on publisher/listener mechanism
-- CosmosDB/Azure Storage: store records and/or state that is used by your code
-- And more...
+![overview](https://github.com/JanVanMeirvenne/ExpertsLiveServerless/raw/master/images/overview.png)
 
 ---
 
